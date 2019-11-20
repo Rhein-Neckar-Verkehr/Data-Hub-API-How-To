@@ -1,0 +1,32 @@
+{
+  "name": "p43-how-to",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "repository": "https://github.com/credeo/p43-how-to.git",
+  "author": "credeo GmbH",
+  "license": "MIT",
+  "scripts": {
+    "build": "node ./node_modules/typescript/bin/tsc",
+    "stations": "node ./dist/stations.js",
+    "station": "node ./dist/station.js",
+    "monitor": "node ./dist/monitor.js",
+    "trip": "node ./dist/trip.js"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.8",
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-client": "^2.6.4",
+    "apollo-link": "^1.2.13",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-error": "^1.1.12",
+    "apollo-link-http": "^1.5.16",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
+    "node-fetch": "^2.6.0",
+    "typescript": "^3.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10",
+    "tsc-watch": "^2.2.1"
+  }
+}

@@ -1,0 +1,487 @@
+"""
+Geokoordinate
+"""
+type GeoPoint {
+	"""
+  	Breitgrad in der Dezimalschreibweise
+ 	"""
+	lat: Float
+	"""
+  	Längengrad in der Dezimalschreibweise
+ 	"""
+	long: Float
+	"""
+  	Geohash gemäß http://geohash.org
+ 	"""
+	hash: String
+}
+
+"""
+News und Ticker
+"""
+type Uffbasse implements Tagable {
+	"""
+  	ID
+ 	"""
+	id: ID!
+	"""
+  	Type des Uffbasses
+ 	"""
+	type: UffbasseType
+	"""
+  	Gültigkeit ab
+ 	"""
+	validFrom: Time
+	"""
+  	Gültigkeit bis
+ 	"""
+	validUntil: Time
+	"""
+  	Darstellung ab
+ 	"""
+	displayFrom: Time
+	"""
+  	Datum der Erstellung
+ 	"""
+	date: Time
+	"""
+	Titel mit HTML Formatierung
+ 	"""
+	title: String
+	"""
+	Text mit HTML Formatierung 
+ 	"""
+	text: String
+	"""
+	Titel ohne HTML Formatierung
+ 	"""
+	rawTitle: String
+	"""
+	Text ohne HTML Formatierung
+ 	"""
+	rawText: String
+	"""
+	Betroffene Linien als Pagination
+ 	"""
+	affectedLineGroups(first: Int, after: String): SearchResult
+	"""
+	Betroffene Haltestellen als Pagination
+ 	"""
+	affectedStations(first: Int, after: String): SearchResult
+	"""
+	Liste von Links als Liste
+ 	"""
+	links: [URL]
+	"""
+	Liste von Bildern als Liste
+ 	"""
+	images: [URL]
+	"""
+	Liste von Vorschauen als Liste
+ 	"""
+	thumbs: [URL]
+	"""
+	Liste von Tags als Liste
+ 	"""
+	tags(key: String, first: Int, after: String): SearchResult
+
+}
+
+"""
+Aufzählungstyp für Uffbasses
+"""
+enum UffbasseType {
+	NEWS
+	TICKER
+	ALERT
+	CANCELLATION
+	INFORMATION
+}
+
+"""Eine Haltestelle"""
+type Station implements Tagable {
+	id: ID!
+	"""hafasID entspricht der ID"""
+	hafasID: ID!
+	"""Globale ID im Format cc:nnnnn:n*"""
+	globalID: String 
+	shortName: String
+	name: String
+	longName: String
+	style: Style
+	location: GeoPoint
+	"""Fahrten der Haltestelle, die nach den Kriterien startTime und endTime abgefragt werden können"""
+	journeys(startTime: String, endTime: String, first: Int, after: String): SearchResult
+	lines(first: Int, after: String): SearchResult
+	platforms(first: Int, after: String): SearchResult
+	poles(first: Int, after: String): SearchResult
+	uffbasses(on: String, type: UffbasseType, first: Int, after: String): SearchResult
+	"""Alle VRN Halte, sofern die Haltestelle auch von der VRN angefahren wird"""
+	vrnStops(time: String) : [VRNStop]
+	hasVRNStops: Boolean
+	tags(key: String, first: Int, after: String): SearchResult
+
+}
+
+"""Ein Mast"""
+type Pole implements Tagable {
+	id: ID!
+	location: GeoPoint
+	station: Station
+	platform: Platform
+	zone: Zone
+	hasStops: Boolean
+	uffbasses(on: String, type: UffbasseType, first: Int, after: String): SearchResult
+	tags(key: String, first: Int, after: String): SearchResult
+}
+
+"""Ein Steig oder Gleis"""
+type Platform implements Tagable {
+	id: ID!
+	station: Station
+	location: GeoPoint
+	label: String
+	type: PlatformType
+	hasStops: Boolean
+	barrierFreeType: BarrierFreeType
+	locationType: LocationType
+	poles(first: Int, after: String): SearchResult
+	tags(key: String, first: Int, after: String): SearchResult
+
+}
+
+enum PlatformType {
+	STEIG
+	GLEIS
+}
+
+"""Eine Fahrt"""
+type Journey implements Tagable {
+	id: ID!
+	shardKey: String
+	line: Line
+	starts: Time
+	ends: Time
+	type: JourneyType
+	"""Alle Halte einer Fahrt, wobei nach einer hafasID sofort gefiltert werden kann"""
+	stops(hafasID:ID): [Stop!]
+	tags(key: String, first: Int, after: String): SearchResult
+}
+
+"""Ein Halt"""
+type Stop {
+	id: ID!
+	canceled: Boolean
+	station: Station
+	destinationLabel: String
+	pole: Pole
+	"""Soll Ankunft"""
+	plannedArrival: Time
+	"""Soll Abfahrt"""
+	plannedDeparture: Time
+	"""Prognostisierte Ankunft"""
+	realtimeArrival: Time
+	"""Prognostisierte Abfahrt"""
+	realtimeDeparture: Time
+}
+
+"""Eine Linie"""
+type Line implements Tagable {
+	id: ID!
+	lineGroup: LineGroup
+	style: Style
+	stations(first: Int, after: String): SearchResult
+	"""Fahrten der Linie, die nach den Kriterien startTime und endTime abgefragt werden können"""
+	journeys(startTime: String, endTime: String, first: Int, after: String): SearchResult
+	tags(key: String, first: Int, after: String): SearchResult
+}
+
+"""Eine Liniengruppe"""
+type LineGroup implements Tagable {
+	id: ID!
+	label: String
+	style: Style
+	type: LineGroupType
+	lines(first: Int, after: String): SearchResult
+	stations(first: Int, after: String): SearchResult
+	"""Fahrten der Linie, die nach den Kriterien startTime und endTime abgefragt werden können"""
+	journeys(startTime: String, endTime: String, first: Int, after: String): SearchResult
+	uffbasses(on: String, type: UffbasseType, first: Int, after: String): SearchResult
+	tags(key: String, first: Int, after: String): SearchResult
+}
+
+enum JourneyType {
+	ZUG
+	SBAHN
+	STRASSENBAHN
+	STADTBUS
+	REGIOBUS
+	RUFTAXI
+	BERGBAHN
+	FAEHRE
+}
+
+enum LineGroupType {
+	ZUG
+	SBAHN
+	STRASSENBAHN
+	STADTBUS
+	REGIOBUS
+	RUFTAXI
+	BERGBAHN
+	FAEHRE
+}
+
+enum LanguageType {
+	DE
+}
+
+enum SourceType {
+	REALTIMEONLY
+	SCHEDULEDONLY
+	BOTH
+}
+
+"""Datentyp um ergänzende Informationen zum Styling zu übertragen"""
+type Style {
+	primary: Color
+	secondary: Color
+	contrast: Color
+	icon: URL
+	image: URL
+	video: URL
+	audio: URL
+	font: URL
+	misc: [URL]
+}
+
+"""Repräsentation eines HTTP-Links"""
+type URL {
+	protocol: String
+	host: String
+	port: Int
+	path: String
+	pathname: String
+	query: String
+	search: String
+	address: String
+}
+
+"""Repräsentation einer Farbe"""
+type Color {
+	hex: String
+	r: Int
+	g: Int
+	b: Int
+	c: Float
+	m: Float
+	y: Float
+	k: Float
+}
+
+"""Eine Wabe"""
+type Zone implements Tagable {
+	id: ID!
+	poles(first: Int, after: String): SearchResult
+	tags(key: String, first: Int, after: String): SearchResult
+
+}
+
+"""Ein Zeitstempel"""
+type Time {
+    """Tag, beginnend bei 1 ... 31"""
+    date: Int
+    """Monat, beginnend bei 1 ... 12"""
+    month: Int
+    """Vierstellig, bspw. 2019"""
+    year: Int
+    """Stunden, beginnend bei 0 ... 23"""
+    h: Int
+    """Minuten, beginnend bei 0 ... 59"""
+    m: Int
+    """Sekunden, beginnend bei 0 ... 59"""
+    s: Int
+    """Anzahl der Sekunden seit dem 1.1.1970T00:00:00 UTC+0"""
+    X: Int
+    """UTC Offset, bspw +2 für MESZ oder +0"""
+    offSet: Int
+    """Repräsentation der Zeit als Zeichenkette nach ISO 8601"""
+    isoString: String
+}
+
+enum BarrierFreeType {
+	NONE
+	RAMP
+	LEVEL
+}
+
+
+enum LocationType {
+	DEFAULT
+	HIGH
+	LOW
+	UNDERGROUND
+	OUTSIDE
+}
+
+"""Hilfskonstrukt zur Pagination"""
+union Element = Pole | Station | Journey | Uffbasse | Platform | Zone | Line | LineGroup | Tag
+
+"""Datentyp zur Pagniation"""
+type SearchResult {
+	totalCount: Int
+	cursor: String
+	elements: [Element]
+}
+
+"""Hilfskonstrukt für Tags"""
+interface Tagable {
+	tags(key: String, first: Int, after: String): SearchResult
+}
+
+enum TagType {
+    POLE,
+    STATION,
+    LINE,
+    LINEGROUP,
+    PLATFORM,
+    ZONE,
+    UFFBASSE,
+	JOURNEY
+}
+
+"""Ein Tag, um Informationen zu Tabable Datentypen zu annotieren"""
+type Tag {
+	id: ID!
+	key: String
+	value: String
+	references(type: TagType, first: Int, after: String): SearchResult
+}
+
+schema {
+    query: Query
+}
+
+"""Alle Abfragen"""
+type Query {
+	tags(key: String, target: TagType, first: Int, after: String): SearchResult
+	tag(id: String!): Tag
+	lines(label: String, onlyWithJourneys: Boolean, first: Int, after: String): SearchResult
+	line(id: String!): Line
+	lineGroups(label: String, first: Int, after: String): SearchResult
+	lineGroup(id: String!): LineGroup
+	stations(name: String, lat: Float, long: Float, distance: Float, first: Int, after: String): SearchResult
+	station(id: String!): Station
+	journeys(startTime: String, endTime: String, first: Int, after: String, source: SourceType): SearchResult
+	journey(id: String!, shardKey:String!): Journey
+	uffbasse(id: String!): Uffbasse
+	uffbasses(first: Int,after: String): SearchResult
+	pole(id: String!): Pole
+	poles(first: Int, after: String): SearchResult
+	platform(id: String!): Platform
+	platforms(first: Int, after: String): SearchResult
+	zone(id: String!): Zone
+	zones(first: Int, after: String): SearchResult
+
+	"""VDV431"""
+	trips(originLat: Float, originLong: Float, originGlobalID: String, destinationGlobalID: String, destinationLat: Float, destinationLong: Float, departureTime: String, arrivalTime: String): [Trip]
+	vrnStations(lat: Float!, long: Float!, distance: Float): [VRNStation]
+	addresses(query:String!): [Address]
+}
+
+"""VDV 431 Stop"""
+type VRNStop {
+	timetabledTime: Time!
+	service: VRNService
+}
+
+"""VDV 431 Service"""
+type VRNService {
+	type: String
+	name: String
+	description: String
+	destinationLabel: String
+	lineGroup: LineGroup
+}
+
+"""VDV 431 Trip"""
+type Trip {
+	startTime: Time
+	endTime: Time
+	interchanges: Int
+	legs:[Leg]
+}
+
+union Leg = InterchangeLeg | TimedLeg | ContinuousLeg
+
+union Point = StopPoint | GeoPosition
+
+"""VDV 431 InterchangeLeg"""
+type InterchangeLeg {
+	mode: String
+	start: Point
+	end: Point
+	startTime: Time
+	endTime: Time
+}
+
+"""VDV 431 ContinuousLeg"""
+type ContinuousLeg {
+	mode: String
+	start: Point
+	end: Point
+	startTime: Time
+	endTime: Time
+}
+
+"""VDV 431 StopPoint"""
+type StopPoint {
+	ref: String
+	name: String
+	station: Station
+}
+
+"""VDV 431 GeoPosition"""
+type GeoPosition {
+	"""
+  	Breitgrad in der Dezimalschreibweise
+ 	"""
+	lat: Float
+	"""
+  	Längengrad in der Dezimalschreibweise
+ 	"""
+	long: Float
+}
+
+"""VDV 431 TimedLeg"""
+type TimedLeg {
+	board: TimedLegEntry
+	alight: TimedLegEntry
+	service: VRNService
+}
+
+"""VDV 431 TimedLegEntry"""
+type TimedLegEntry {
+	point: Point
+	name: String
+	timetabledTime: Time
+	estimatedTime: Time
+}
+
+"""VDV 431 Station"""
+type VRNStation {
+	point: Point
+	place: String
+	location: GeoPoint
+}
+
+"""VDV 431 Address"""
+type Address {
+	code: String
+	street: String
+	postalCode: String
+	city: String
+	location: GeoPoint
+	probability:Float
+	distance:Float
+}
