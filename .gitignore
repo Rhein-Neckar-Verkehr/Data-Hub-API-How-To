@@ -60,4 +60,13 @@ typings/
 # next.js build output
 .next
 
+# dist folder
 dist/
+
+# http file containing the secrets
+graphql.http
+
+Dockerfile
+cspell.json
+.DS_store
+prepare_env_file.sh
