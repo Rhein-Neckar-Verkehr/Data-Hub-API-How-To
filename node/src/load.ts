@@ -8,15 +8,25 @@ client
         station(id: "2417") {
           hafasID
           longName
-          journeys(startTime: "2024-02-26T17:00:00Z", first: 2) {
+          journeys(startTime: "2024-02-26T17:00:00Z", first: 3) {
             totalCount
             elements {
               ... on Journey {
+                id
                 line {
                   id
                 }
+                loadsForecastType
 
-                stops(onlyHafasID: "2417") {
+                loads(onlyHafasID: "2417") {
+                  realtime
+                  forecast
+                  adjusted
+                  loadType
+                  ratio
+                }
+
+                stops(only: "2417") {
                   plannedDeparture {
                     isoString
                   }

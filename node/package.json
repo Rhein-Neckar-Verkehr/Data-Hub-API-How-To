@@ -1,32 +1,31 @@
 {
-  "name": "p43-how-to",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "repository": "https://github.com/credeo/p43-how-to.git",
-  "author": "credeo GmbH",
+  "name": "data-hub-api-how-to",
+  "version": "1.0.2",
+  "description": "A simple typescript client for the RNV Data Hub API",
+  "repository": "https://github.com/Rhein-Neckar-Verkehr/Data-Hub-API-How-To",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "build": "node ./node_modules/typescript/bin/tsc",
     "stations": "node ./dist/stations.js",
     "station": "node ./dist/station.js",
     "monitor": "node ./dist/monitor.js",
-    "trip": "node ./dist/trip.js"
+    "trip": "node ./dist/trip.js",
+    "load": "node ./dist/load.js",
+    "lines": "node ./dist/lines.js"
   },
   "dependencies": {
-    "@types/node": "^12.12.8",
-    "apollo-cache-inmemory": "^1.6.2",
-    "apollo-client": "^2.6.4",
-    "apollo-link": "^1.2.13",
-    "apollo-link-context": "^1.0.19",
-    "apollo-link-error": "^1.1.12",
-    "apollo-link-http": "^1.5.16",
-    "graphql": "^14.5.8",
+    "@apollo/client": "^3.9.5",
+    "@types/node": "^20.11.20",
+    "graphql": "^16.8.1",
     "graphql-tag": "^2.10.1",
-    "node-fetch": "^2.6.0",
-    "typescript": "^3.7.2"
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "typescript": "^5.3.3",
+    "dotenv": "16.4.5"
   },
   "devDependencies": {
-    "nodemon": "^1.18.10",
-    "tsc-watch": "^2.2.1"
+    "nodemon": "^3.1.0",
+    "tsc-watch": "^6.0.4"
   }
 }
