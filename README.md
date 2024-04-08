@@ -2,7 +2,7 @@
 
 Contains a simple client in typescript to access the RNV Open Data API and a curl script with equivalent functionality. 
 
-This readme file contains information about using the client. For detailed documentation on how to use the GraphQL interface, see the documentation (link from here)[https://www.opendata-oepnv.de/ht/de/organisation/verkehrsunternehmen/rnv/openrnv/data-hub-api-dokumentationen]
+This readme file contains information about using the client. For detailed documentation on how to use the GraphQL interface, see the documentation [link from here](https://www.opendata-oepnv.de/ht/de/organisation/verkehrsunternehmen/rnv/openrnv/data-hub-api-dokumentationen)
 
 # Preparation steps
 
