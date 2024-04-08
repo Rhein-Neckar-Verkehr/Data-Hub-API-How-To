@@ -34,6 +34,7 @@ sudo chmod u+rwx prepare_env_file.sh
 ### On Windows
 
 ```bash
+$ cd node
 $ curl https://gist.githubusercontent.com/rnv-opendata/900d43affca063caed7918f91d9531b5/raw/38060421063bc4766566e5324af489fbce226cac/prepare_env_file.cmd > prepare_env_file.cmd
 $ pwsh prepare_env_file.cmd
 ```
